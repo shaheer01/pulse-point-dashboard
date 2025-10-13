@@ -25,7 +25,7 @@ ChartJS.register(
 );
 
 function TrendChart({ data, loading, timeRange }) {
-  if (loading) {
+  if (loading || !data || !Array.isArray(data) || data.length === 0) {
     return (
       <Card elevation={2} sx={{ height: '100%' }}>
         <CardContent>

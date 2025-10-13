@@ -51,6 +51,12 @@ function Dashboard({ darkMode, setDarkMode, onLogout }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
+      console.log('[Dashboard] Fetching analytics, token exists:', !!token);
+      if (!token) {
+        console.warn('[Dashboard] No token found, skipping analytics fetch');
+        setLoading(false);
+        return;
+      }
       const endDate = new Date();
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - timeRange);
@@ -76,9 +82,15 @@ function Dashboard({ darkMode, setDarkMode, onLogout }) {
         },
       });
 
+      console.log('[Dashboard] Analytics response:', response.data);
       setAnalytics(response.data);
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      console.error('[Dashboard] Error fetching analytics:', error);
+      console.error('[Dashboard] Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
       if (error.response?.status === 401) {
         onLogout();
       }
@@ -90,6 +102,11 @@ function Dashboard({ darkMode, setDarkMode, onLogout }) {
   const fetchRealtime = async () => {
     try {
       const token = localStorage.getItem('token');
+      console.log('[Dashboard] Fetching realtime, token exists:', !!token);
+      if (!token) {
+        console.warn('[Dashboard] No token found, skipping realtime fetch');
+        return;
+      }
 
       const params = {};
       // Add app filter if not "all"
@@ -108,9 +125,15 @@ function Dashboard({ darkMode, setDarkMode, onLogout }) {
         },
       });
 
+      console.log('[Dashboard] Realtime response:', response.data);
       setRealtime(response.data);
     } catch (error) {
-      console.error('Error fetching realtime data:', error);
+      console.error('[Dashboard] Error fetching realtime:', error);
+      console.error('[Dashboard] Realtime error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
     }
   };
 

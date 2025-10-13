@@ -24,7 +24,7 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function RealtimeWidget({ data, loading }) {
-  if (loading || !data) {
+  if (loading || !data || !data.users_by_minute || !data.users_by_country) {
     return (
       <Card elevation={2} sx={{ height: '100%' }}>
         <CardContent>
