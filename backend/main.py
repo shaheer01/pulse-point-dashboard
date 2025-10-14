@@ -36,8 +36,10 @@ app.add_middleware(
         "https://www.compressphotos.cloud",
         "http://www.compressphotos.cloud",
         # Allow ngrok URLs (update this when ngrok URL changes)
-        "https://cb4db0cf3662.ngrok-free.app",
-        "http://cb4db0cf3662.ngrok-free.app",
+        "https://054d9472cc3f.ngrok-free.app",
+        "http://054d9472cc3f.ngrok-free.app",
+        "https://883f1947c43d.ngrok-free.app",
+        "http://883f1947c43d.ngrok-free.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -145,6 +147,9 @@ async def track_event(event: EventCreate, db: Session = Depends(get_db)):
         db.add(session)
     else:
         session.last_activity = datetime.utcnow()
+        # Update country if it was Unknown and now we have a real country
+        if session.country == "Unknown" and event.country != "Unknown":
+            session.country = event.country
 
     db.commit()
     db.refresh(db_event)
