@@ -27,6 +27,10 @@ function Login({ onLogin }) {
       const response = await axios.post(`${API_URL}/api/auth/login`, {
         email,
         password,
+      }, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
       });
 
       localStorage.setItem('token', response.data.access_token);

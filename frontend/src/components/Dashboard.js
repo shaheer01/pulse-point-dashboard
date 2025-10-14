@@ -39,6 +39,7 @@ function Dashboard({ darkMode, setDarkMode, onLogout }) {
       const response = await axios.get(`${API_URL}/api/apps`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true',
         },
       });
       setApps(response.data.apps || []);
@@ -79,6 +80,7 @@ function Dashboard({ darkMode, setDarkMode, onLogout }) {
         params,
         headers: {
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true',
         },
       });
 
@@ -122,6 +124,7 @@ function Dashboard({ darkMode, setDarkMode, onLogout }) {
         params,
         headers: {
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true',
         },
       });
 
