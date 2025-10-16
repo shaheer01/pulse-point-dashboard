@@ -49,7 +49,7 @@ services:
       dockerfile: Dockerfile
     container_name: analytics_frontend
     environment:
-      REACT_APP_API_URL: https://883f1947c43d.ngrok-free.app
+      REACT_APP_API_URL: https://38c74afa6763.ngrok-free.app
     ports:
       - "3000:3000"
     depends_on:
