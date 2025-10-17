@@ -275,21 +275,40 @@ async def get_analytics_summary(
             return 100.0 if current > 0 else 0.0
         return round(((current - previous) / previous) * 100, 1)
 
-    # Get trend data (daily aggregates)
+    # Get trend data (hourly for <=24h, daily for longer periods)
     trend_data = []
-    current_date = start_date
-    while current_date <= end_date:
-        next_date = current_date + timedelta(days=1)
-        daily_filter = build_filter(current_date, next_date)
-        daily_users = db.query(func.count(distinct(Event.user_id))).filter(
-            daily_filter
-        ).scalar() or 0
+    period_hours = (end_date - start_date).total_seconds() / 3600
 
-        trend_data.append({
-            "date": current_date.strftime("%Y-%m-%d"),
-            "users": daily_users
-        })
-        current_date = next_date
+    if period_hours <= 24:
+        # Hourly aggregates for 24-hour view
+        current_time = start_date.replace(minute=0, second=0, microsecond=0)
+        while current_time <= end_date:
+            next_time = current_time + timedelta(hours=1)
+            hourly_filter = build_filter(current_time, next_time)
+            hourly_users = db.query(func.count(distinct(Event.user_id))).filter(
+                hourly_filter
+            ).scalar() or 0
+
+            trend_data.append({
+                "date": current_time.strftime("%Y-%m-%d %H:%M:%S"),
+                "users": hourly_users
+            })
+            current_time = next_time
+    else:
+        # Daily aggregates for longer periods
+        current_date = start_date
+        while current_date <= end_date:
+            next_date = current_date + timedelta(days=1)
+            daily_filter = build_filter(current_date, next_date)
+            daily_users = db.query(func.count(distinct(Event.user_id))).filter(
+                daily_filter
+            ).scalar() or 0
+
+            trend_data.append({
+                "date": current_date.strftime("%Y-%m-%d"),
+                "users": daily_users
+            })
+            current_date = next_date
 
     return {
         "total_users": total_users,
